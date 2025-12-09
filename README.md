@@ -198,5 +198,5 @@ Example:
 
 ```bash
 export CRYPTOLENS_TOKEN="your_access_token"
-export CRYPTOLENS_PRODUCT_ID="31733"
+export CRYPTOLENS_PRODUCT_ID="product_id"
 
