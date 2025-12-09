@@ -142,3 +142,45 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+```
+
+## Signature Verification
+
+With:
+-- Sign=true
+-- SignMethod=1
+the server returns:
+-- licenseKey: Base64-encoded JSON payload of license data
+-- signature: Base64-encoded RSA signature of the licenseKey bytes
+This SDK verifies the signature using the RSA Public Key of the product.
+
+## Examples
+This repository includes runnable examples:
+
+```bash
+cargo run --example activate
+cargo run --example get_key
+
+```
+## Status and Roadmap
+
+As long as the library is at version `0.0.X`, we do not guarantee semantic versioning stability.
+
+### Implemented
+
+- [x] **Activate**
+- [x] **GetKey**
+- [x] **RSA signature verification** (`SignMethod=1`)
+- [x] More resilient deserialization of license payload
+
+### Planned before `0.1.0`
+
+- [ ] Improve and standardize error types and messages
+- [ ] Return structured server errors when activation fails
+- [ ] Decide time strategy:
+  - [ ] Keep integer timestamps by default
+  - [ ] Optionally add a `chrono` feature
+- [ ] Polish naming to be more Rust-idiomatic
+- [ ] Add integration tests for Activate/GetKey
+- [ ] Optional: feature flags for `async` / `blocking`
+
