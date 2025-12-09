@@ -1,18 +1,77 @@
 # Cryptolens Client API for Rust
 
-> This library is currently in a beta release.
+> Status: Beta
 
-This library simplifies access to the [Cryptolens Web API](https://cryptolens.io) from the
-Rust programming language.
+A lightweight Rust SDK for the Cryptolens / Devolens Web API.
 
-Several examples are available in the repository at [https://github.com/Cryptolens/cryptolens-rust-examples](https://github.com/Cryptolens/cryptolens-rust-examples).
+This library provides a clean client for:
+- **Activate**
+- **GetKey**
 
-As long as the library is at version `0.0.X` we are not following semantic versioning. Before
-moving to version `0.1.0` at least the following needs to be implemented:
+It also supports **RSA signature verification** of signed responses using:
+- `Sign=true`
+- `SignMethod=1` (String Sign)
+- RSA + SHA256
 
- * [ ] Parse server message when an activation fails, and return an appropriate error.
- * [ ] Add proper management of errors in third-party libraries.
- * [ ] Decide on how to deal with time, should we depend on e.g. the `chrono` crate?
-       Or should we just expose the time as an integer and let the user deal with this
-       as we do now?
- * [ ] Possibly change capitalization of names to make them more rust-like
+The codebase is structured to make it easy to add more API methods later.
+
+---
+
+## Features
+
+- Activate a license key (**Activate**)
+- Retrieve license details (**GetKey**)
+- Verify signed responses via RSA signature (String Sign)
+- Robust deserialization for potentially missing/null fields
+- Clear and extensible internal structure
+
+---
+
+## Requirements
+
+- Rust 1.70+ (recommended: latest stable)
+- Network access to the Web API
+
+---
+
+## Installation
+
+Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+cryptolens = "0.0.1"
+
+```
+## If you want to run examples:
+
+```toml
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+```
+
+## Configuration
+You will need:
+
+Access Token with permissions:
+
+Activate
+
+Get Key
+
+Product Id
+
+A License Key created under your product
+
+RSA Public Key (XML format) for signature verification
+
+Recommended env variables for development:
+
+```bash
+export CRYPTOLENS_TOKEN="your_access_token"
+export CRYPTOLENS_PRODUCT_ID="your_product_id"
+export CRYPTOLENS_KEY="your_license_key"
+export CRYPTOLENS_MACHINE_CODE="machine-1"
+export CRYPTOLENS_PUBLIC_KEY_XML='<RSAKeyValue><Modulus>...</Modulus><Exponent>...</Exponent></RSAKeyValue>'
+
