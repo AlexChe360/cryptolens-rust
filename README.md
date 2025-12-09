@@ -53,18 +53,12 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 ## Configuration
 You will need:
-
-Access Token with permissions:
-
-Activate
-
-Get Key
-
-Product Id
-
-A License Key created under your product
-
-RSA Public Key (XML format) for signature verification
+1. Access Token with permissions:
+- Activate
+- Get Key
+2. Product Id
+3. A License Key created under your product
+4. RSA Public Key (XML format) for signature verification
 
 Recommended env variables for development:
 
@@ -74,4 +68,77 @@ export CRYPTOLENS_PRODUCT_ID="your_product_id"
 export CRYPTOLENS_KEY="your_license_key"
 export CRYPTOLENS_MACHINE_CODE="machine-1"
 export CRYPTOLENS_PUBLIC_KEY_XML='<RSAKeyValue><Modulus>...</Modulus><Exponent>...</Exponent></RSAKeyValue>'
+
+```
+## Usage
+Activate
+
+```rust
+use cryptolens::{CryptolensClient, KeyActivateArguments, verify_license_signature};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let token = std::env::var("CRYPTOLENS_TOKEN")?;
+    let product_id: u64 = std::env::var("CRYPTOLENS_PRODUCT_ID")?.parse()?;
+    let key = std::env::var("CRYPTOLENS_KEY")?;
+    let machine = std::env::var("CRYPTOLENS_MACHINE_CODE")?;
+    let public_key = std::env::var("CRYPTOLENS_PUBLIC_KEY_XML")?;
+
+    let client = CryptolensClient::new(token);
+
+    let args = KeyActivateArguments {
+        ProductId: product_id,
+        Key: &key,
+        MachineCode: &machine,
+        ..Default::default()
+    };
+
+    let license = client.activate(args).await?;
+
+    let ok = verify_license_signature(&license, &public_key)?;
+    println!("signature ok: {}", ok);
+
+    println!("ProductId: {}", license.ProductId);
+    println!("Key: {:?}", license.Key);
+    println!("Expires: {}", license.Expires);
+    println!("AllowedMachines: {:?}", license.AllowedMachines);
+    println!("ActivatedMachines: {}", license.ActivatedMachines.len());
+
+    Ok(())
+}
+
+```
+
+## GetKey
+
+```rust
+use cryptolens::{CryptolensClient, GetKeyArguments, verify_license_signature};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let token = std::env::var("CRYPTOLENS_TOKEN")?;
+    let product_id: u64 = std::env::var("CRYPTOLENS_PRODUCT_ID")?.parse()?;
+    let key = std::env::var("CRYPTOLENS_KEY")?;
+    let public_key = std::env::var("CRYPTOLENS_PUBLIC_KEY_XML")?;
+
+    let client = CryptolensClient::new(token);
+
+    let args = GetKeyArguments {
+        ProductId: product_id,
+        Key: &key,
+    };
+
+    let license = client.get_key(args).await?;
+
+    let ok = verify_license_signature(&license, &public_key)?;
+    println!("signature ok: {}", ok);
+
+    println!("ProductId: {}", license.ProductId);
+    println!("Key: {:?}", license.Key);
+    println!("Expires: {}", license.Expires);
+    println!("AllowedMachines: {:?}", license.AllowedMachines);
+    println!("ActivatedMachines: {}", license.ActivatedMachines.len());
+
+    Ok(())
+}
 
