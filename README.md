@@ -184,3 +184,19 @@ As long as the library is at version `0.0.X`, we do not guarantee semantic versi
 - [ ] Add integration tests for Activate/GetKey
 - [ ] Optional: feature flags for `async` / `blocking`
 
+## Troubleshooting
+
+### `api error: 1 Could not find the product`
+
+**Cause:** wrong `ProductId` or token points to a different account/environment.
+
+**Check:**
+- `ProductId` matches the product in your dashboard.
+- Token has **Activate** / **Get Key** permissions.
+
+Example:
+
+```bash
+export CRYPTOLENS_TOKEN="your_access_token"
+export CRYPTOLENS_PRODUCT_ID="31733"
+
